@@ -45,15 +45,15 @@ void setup() {
 	sensors.setResolution(tempDeviceAddress, TEMPERATURE_PRECISION);
 	}
   }
-
+  
+Wire.begin();
+rtc.begin();
 }
 
 
 void loop() {
   delay(5000);  
   String Time = "";
-    Wire.begin();
-    rtc.begin();
     DateTime now = rtc.now();
     Time+=String(now.year());
     Time+="/";
@@ -81,7 +81,7 @@ void loop() {
       Time +="0";
       }
     Time+=String(now.second());
-    sensors.requestTemperatures(); // Send the command to get temperatures
+    sensors.requestTemperatures(); //Send the command to get temperatures
     String dataString = "";
     dataString += Time;
 
@@ -97,7 +97,7 @@ void loop() {
     } 
   
     }
-     File dataFile = SD.open("datalog.csv", FILE_WRITE);
+     File dataFile = SD.open("templog.csv", FILE_WRITE);
      delay(1000);
      if (dataFile) {
         dataFile.println(dataString);
@@ -109,7 +109,7 @@ void loop() {
         while (client.connected()) {
             if (client.available()) { 
                    code200(client);
-                   webFile = SD.open("datalog.csv");
+                   webFile = SD.open("templog.csv");
                    if (webFile) {
                        while(webFile.available()) {
                            client.write(webFile.read());
